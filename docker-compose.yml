@@ -1,0 +1,38 @@
+services:
+  nestjs-app:
+    build: .
+    container_name: nestjs-app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: fcrm_user
+      MYSQL_PASSWORD: snXv78m8vFpn
+      MYSQL_DB: fcrm_db
+    env_file: ".env"
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Expose debug port
+    tty: true
+    volumes:
+      - /usr/src/app/node_modules
+      - "/app/node_modules" # save the compiled node_modules to anonymous volume so make sure we don't attach the volume to our host node_modules
+      - "./:/app" # link our project directory to the docker  directory so any change will get updated in the running container and also we will benefit from sourcemaps for debugging
+    command: npm run start:debug  # Use the debug script from package.json
+    depends_on:
+      - mysql
+
+# services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ggyyYAmU8f4k
+      MYSQL_DATABASE: fcrm_db
+      MYSQL_USER: fcrm_user
+      MYSQL_PASSWORD: snXv78m8vFpn
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
